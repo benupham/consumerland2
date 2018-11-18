@@ -17,37 +17,40 @@ var color = d3.scaleOrdinal(d3.schemeCategory20)
 
 d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
 
+  // create the circle pack algorithm
   var pack = d3.pack()
     .size([(width), (height)])
     .padding(0);  
 
+  // create the hierarchy for pack  
   root = d3.hierarchy(root)
       .sum(function(d) { return d.size; })
       .sort(function(a, b) { return b.value - a.value; });
-      //console.log('root',root);
-      console.log('the pack',pack(root))
+      
+  // circle pack the data    
   var thePack = pack(root);  
 
   var depts = [];
-  var subdepts = []
+  var subdepts = [];
 
+  // extract the circle-packed subdepartment nodes
   thePack.children.forEach(d => {
     depts.push(d);
     d.children.forEach(sd => {
       subdepts.push(sd);
     });
   });
-  console.log('subdepts',subdepts)
-
-  // The largest node for each cluster.
-  var clusters = new Array(m);
+  
   var clustersObj = {};
 
+  // create the nodes, and assign the "largest" for each dept to clustersObj
   var nodes = subdepts.map(function(sd) {
-    var id = sd.data.id,
-        i = sd.parent.data.name,
-        r = sd.r,
-        d = {cluster: i, radius: r, x: sd.x, y: sd.y, id: id};
+    const id = sd.data.id;
+    const i = sd.parent.data.name;
+    const r = 12;
+    const d = {cluster: i, radius: r, x: sd.x, y: sd.y, id: id};
+
+    // this is only really relevant if r is not the same for every node
     if (!clustersObj[i] || (r > clustersObj[i].radius)) clustersObj[i] = d;
     return d;
   });
@@ -57,20 +60,21 @@ d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
     // keep entire simulation balanced around screen center
     .force('center', d3.forceCenter(width/2, height/2))
     
-    // pull toward center
+    // pull toward center; from 3rd party attract library
     .force('attract', forceAttract()
       .target([width/2, height/2])
       .strength(0.01))
 
-    // cluster by section
+    // cluster by section; from 3rd party cluster library
     .force('cluster', forceCluster()
       .centers(function (d) { return clustersObj[d.cluster]; })
-      .strength(0.5)
+      .strength(0.9)
       .centerInertia(0.1))
 
     // apply collision with padding
     .force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
-      .strength(0))
+      .strength(0)
+      .iterations(5))
 
     .on('tick', layoutTick)
     .nodes(nodes);
@@ -96,6 +100,8 @@ d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
   }
 
   function dragged (d) {
+    // position of node is "fixed" to position of mouse
+    // so it is not acted upon on each tick
     d.fx = d3.event.x;
     d.fy = d3.event.y;
   }
@@ -106,7 +112,7 @@ d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
     d.fy = null;
   }
 
-  // ramp up collision strength to provide smooth transition
+  // runs once on load to provide smooth transition
   var transitionTime = 3000;
   var t = d3.timer(function (elapsed) {
     var dt = elapsed / transitionTime;
@@ -121,125 +127,4 @@ d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
       .attr('r', function (d) { return d.radius; });
   }
 
-  const button = document.createElement('button');
-  const buttontext = document.createTextNode("Re-plot subdepts"); 
-  button.appendChild(buttontext);
-  document.body.appendChild(button);
-  button.addEventListener('click', e => {
-    plotUpdatedPositions(thePack,nodes);
-  })
-
 })
-
-// var plotUpdatedPositions = function(packedFeatures, clusteredSubdepts) {
-//   const deptColors = {};
-//   packedFeatures.children.forEach(dept => { 
-//     const subdeptsCoords = [];
-//     dept.children.forEach(subdept => {
-//       clusteredSubdepts.forEach(csub => {
-//         if (csub.id === subdept.data.id) {
-//           const dx = csub.x - subdept.x;
-//           const dy = csub.y - subdept.y;
-//           subdept.each(n => {
-//             n.x = n.x + dx;
-//             n.y = n.y + dy;
-            
-//             if (n.depth === 2) subdeptsCoords.push([n.x,n.y]);
-//           })
-//         }
-//       })
-//     })
-//     const deptCoord = [0,0];
-//     subdeptsCoords.forEach(coord => {
-//       deptCoord[0] = deptCoord[0] + coord[0];
-//       deptCoord[1] = deptCoord[1] + coord[1];
-//     })
-//     deptCoord[0] = deptCoord[0] / subdeptsCoords.length;
-//     deptCoord[1] = deptCoord[1] / subdeptsCoords.length;
-//     console.log(deptCoord);
-//     dept.x = deptCoord[0];
-//     dept.y = deptCoord[1];
-//     deptColors[dept.data.name] = color(dept.data.name);
-//   })
-
-//   let nodes = packedFeatures.descendants();
-//   console.log(nodes)
-
-//   let svg = d3.select("#circle-svg"),
-//     margin = 1,
-//     diameter = +svg.attr("width"),
-//     g = svg.append("g")
-//       .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")")
-
-//   let depthColor = d3.scaleLinear()
-//     .domain([-1, 5])
-//     .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-//     .interpolate(d3.interpolateHcl);    
-
-//   var circle = g.selectAll("circle")
-//     .data(nodes)
-//     .enter().append("circle")
-//       .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-//       .style('fill', function (d) { return d.depth === 2 ? color(d.parent.data.name) : d.children ? depthColor(d.depth) : 'white'; })
-  
-//   // var text = g.selectAll("text")
-//   //   .data(nodes)
-//   //   .enter().append("text")
-//   //     .attr("class", "label")
-//   //     .style("fill-opacity", function(d) { return d.depth === 2 ? 1 : 0; })
-//   //     .style("display", function(d) { return d.depth === 2 ? "inline" : "none"; })
-//   //     .text(function(d) { return d.data.name; });
-
-//   var node = g.selectAll("circle,text");
-
-//   svg
-//       .style("background", color(-1))
-//      .on("click", function() { zoom(packedFeatures); });
-
-//   zoomTo([packedFeatures.x, packedFeatures.y, packedFeatures.r * 2 + margin]);
-
-//   function zoom(d) {
-//     var focus0 = focus; focus = d;
-
-//     var transition = d3.transition()
-//         .duration(d3.event.altKey ? 7500 : 750)
-//         .tween("zoom", function(d) {
-//           var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
-//           return function(t) { zoomTo(i(t)); };
-//         });
-
-//     transition.selectAll("text")
-//       .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
-//         .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
-//         .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
-//         .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
-//   }
-
-//   function zoomTo(v) {
-//     var k = diameter / v[2]; view = v;
-//     node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-//     circle.attr("r", function(d) { return d.r * k; });
-//   }
-
-//   function download(content, fileName, contentType) {
-//     content = JSON.stringify(content, replacer, '\t');
-//     var a = document.createElement("a");
-//     var file = new Blob([content], {type: contentType});
-//     a.href = URL.createObjectURL(file);
-//     a.download = fileName;
-//     a.click();
-//   }
-//   function replacer(key, value) {
-//     // Filtering out properties
-//     if (key === 'parent' || key === 'children') {
-//       return undefined;
-//     }
-//     return value;
-//   }
-//   download(nodes, 'd3-nodes.json', 'text/json');
-//   download(deptColors, 'd3-colors.json', 'text/json');
-
-// }
-
-
-
