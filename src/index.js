@@ -81,7 +81,11 @@ d3.json("./data/testd3dataNoSalesDept.json", function(error, root) {
     
   var svg = d3.select('body').append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .call(d3.zoom().on("zoom", function () {
+        svg.attr("transform", d3.event.transform)
+        }))
+      .append("g");
 
   var node = svg.selectAll('circle')
     .data(nodes)
