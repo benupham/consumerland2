@@ -1,0 +1,6 @@
+body {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+.product .name, .price {
+  font-size: 12px;
+}
