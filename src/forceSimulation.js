@@ -23,6 +23,7 @@ export const simulation = d3.forceSimulation(nodes)
   .centerInertia(0.1))
 
 // apply collision with padding
+// TODO: not collide with parent, if it exists
 .force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
   .iterations(2)
   .strength(0))

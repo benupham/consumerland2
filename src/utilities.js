@@ -1,7 +1,7 @@
 
 export function textFormatter(str, width, maxLength = null) {
   if (maxLength !== null) {
-    str = str.length > maxLength ? str.substr(0, maxLength - 3) + '...' : str;
+    str = str.length > maxLength ? str.substr(0, maxLength) + '...' : str;
   }
   if (str.length > width) {
     var p = width;
