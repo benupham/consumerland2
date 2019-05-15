@@ -5,10 +5,12 @@ d3.forceAttract = forceAttract;
 d3.forceCluster = forceCluster;
 
 // import {simulation} from './forceSimulation';
-import {click} from './click';
+import {click, labelsArray} from './click';
 import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
+import { positionLabels } from './labels';
+import { imageSize } from './constants';
 
 
 export const depts = [];
@@ -34,11 +36,12 @@ export const svg = d3.select("body").append("svg")
 
 var node = svg.selectAll('g.node'); 
 
+
 d3.json("../data/test-brand-generation.json", function(error, root) {
   console.log('root',root)
 
   root.forEach(d => {
-    d.radius = 125/2 * Math.SQRT2;
+    d.radius = imageSize[d.type]/2 * Math.SQRT2;
     if (d.type === 'dept') {
       depts.push(d);
     } else if (d.type === 'subdept') {  
@@ -79,10 +82,12 @@ export const simulation = d3.forceSimulation(nodes)
   .iterations(2)
   .strength(0))
 
-.on('tick', layoutTick);   
+.on('tick', layoutTick);
+//.on('end', positionLabels);   
 
 function layoutTick (e) {
   node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+  //positionLabels();
 }
 
 // ramp up collision strength to provide smooth transition
@@ -92,8 +97,6 @@ var t = d3.timer(function (elapsed) {
   simulation.force('collide').strength(Math.pow(dt, 2) * 0.7);
   if (dt >= 1.0) t.stop();
 });
-
-
 
 
 // Start or restart     
@@ -130,32 +133,35 @@ export function update() {
   nodeEnter.append("image")
     .attr("xlink:href", function (d) { return "../images/" + (d.img || "product-images/missing-item.jpg"); })
     .attr("name", function (d) { return d.name; })
-    .attr("x", function (d) { return -125 / 2; })
-    .attr("y", function (d) { return -125 / 2; })
+    .attr("x", function (d) { return -imageSize[d.type] / 2; })
+    .attr("y", function (d) { return -imageSize[d.type] / 2; })
     .transition(t)
-    .attr("height", d => 125) 
-    .attr("width", d => 125)
+    .attr("height", d => imageSize[d.type] ) 
+    .attr("width", d => imageSize[d.type])
 
   // Append title and price
   var nodeEnterText = nodeEnter.append("text")
-    .attr("class", "name")
     .attr("text-anchor", d => d.type === "product" ? "start" : "middle")
     .attr("x", d => d.type === "product" ? -d.radius : 0)
     .attr("y", function (d) { return d.radius; })
 
   nodeEnterText.append("tspan")
+    .attr("class", "name")
     .text(d =>  textFormatter(d.name, 25, 50)[0])
     // .attr("x", d => d.type === "product" ? -d.radius : 0)
     // .attr("y", function (d) { return d.radius; })
   
   nodeEnterText.append("tspan")
+    .attr("class", "name")
     .text(d =>  textFormatter(d.name, 25, 50)[1])
     .attr("x", d => d.type === "product" ? -d.radius : 0)
     .attr("y", function (d) { return d.radius + 15; });
 
-  nodeEnter.append("text")
+  nodeEnterText.append("tspan")
     .text(d =>  d.price)  
-    .attr("class", "price")  
+    .attr("class", "price")
+    .attr("x", d => d.type === "product" ? -d.radius : 0)
+    .attr("y", function (d) { return d.radius + 30; });  
     
   node = nodeEnter.merge(node);
 

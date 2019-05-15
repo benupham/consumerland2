@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 import {depts,subdepts,brands,products, nodes, update, svg} from './index';
 import {clustersObj} from './clustering';
 
+export const labelsArray = [];
+
 export function click(d) {
   let newNodes = []; 
   if (d.type == 'dept') {
@@ -14,6 +16,10 @@ export function click(d) {
   } else {
     return
   }
+
+  d.children = newNodes;
+  labelsArray.push(d);
+
   console.log('clicked node',d)
 
   // Remove the clicked parent node
@@ -38,15 +44,13 @@ export function click(d) {
   // Set a timer, then update for each
   newNodes.forEach((n,i) => {
     d3.timeout(function() {
-      n.x = d.x + Math.random() * 10;
-      n.y = d.y + Math.random() * 10;
+      n.x = d.x //+ Math.random() * 10;
+      n.y = d.y //+ Math.random() * 10;
       nodes.push(n);   
       update()
     }, 75 * i)
   });
 
-  const parentLabel = getCenterOfChildren(newNodes);
-  displayParentName(d.name, parentLabel);
 }
 
 // list different functions for different types
@@ -59,25 +63,4 @@ function repelNeighbors() {
 
 }
 
-// zooming out to a certain point hides product/brand names
-// displays dept/subdept names in mathematical center of points
-function getCenterOfChildren(children) {
-  const center = {};
-  let x = 0;
-  let y = 0;
-  children.forEach(d => {
-    x = x + d.x;
-    y = y + d.y;
-  });
-  center.x = x / children.length;
-  center.y = y / children.length;
-  return center
-}
 
-function displayParentName(name, location) {
-  svg.append("g")
-  .attr("transform", function (d) { return "translate(" + location.x + "," + location.y + ")"; })
-  .attr("class", "area-label")
-  .append("text")
-  .text(name)
-}
