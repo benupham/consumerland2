@@ -67,14 +67,14 @@ export const simulation = d3.forceSimulation(nodes)
 .force('center', d3.forceCenter(width/2, height/2))
 
 // pull toward center
-.force('attract', d3.forceAttract()
-  .target([width/2, height/2])
-  .strength(0.01))
+// .force('attract', d3.forceAttract()
+//   .target([width/2, height/2])
+//   .strength(0.01))
 
 // cluster by section
 .force('cluster', d3.forceCluster()
   .centers(function (d) { return clustersObj[d.parent]; })
-  .strength(0.5)
+  .strength(0.7)
   .centerInertia(0.1))
 
 // apply collision with padding
