@@ -10,7 +10,8 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize } from './constants';
+import { imageSize, fontSize } from './constants';
+import { forceCollide } from './forceCollideCustom';
 
 
 export const depts = [];
@@ -67,9 +68,9 @@ export const simulation = d3.forceSimulation(nodes)
 .force('center', d3.forceCenter(width/2, height/2))
 
 // pull toward center
-// .force('attract', d3.forceAttract()
-//   .target([width/2, height/2])
-//   .strength(0.01))
+.force('attract', d3.forceAttract()
+  .target([width/2, height/2])
+  .strength(0.01))
 
 // cluster by section
 .force('cluster', d3.forceCluster()
@@ -79,7 +80,7 @@ export const simulation = d3.forceSimulation(nodes)
 
 // apply collision with padding
 .force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
-  .iterations(2)
+  .iterations(3)
   .strength(0))
 
 .on('tick', layoutTick);
@@ -138,16 +139,18 @@ export function update() {
     .transition(t)
     .attr("height", d => imageSize[d.type] ) 
     .attr("width", d => imageSize[d.type])
+    .attr("alignment-baseline", "middle")
 
   // Append title and price
   var nodeEnterText = nodeEnter.append("text")
     .attr("text-anchor", d => d.type === "product" ? "start" : "middle")
     .attr("x", d => d.type === "product" ? -d.radius : 0)
-    .attr("y", function (d) { return d.radius; })
+    .attr("y", function (d) { return imageSize[d.type]/2 + 10; })
+    .attr("font-size", d => fontSize[d.type]);
 
   nodeEnterText.append("tspan")
     .attr("class", "name")
-    .text(d =>  textFormatter(d.name, 25, 50)[0])
+    .text(d =>  textFormatter(d.name, 25, 50)[0]);
     // .attr("x", d => d.type === "product" ? -d.radius : 0)
     // .attr("y", function (d) { return d.radius; })
   

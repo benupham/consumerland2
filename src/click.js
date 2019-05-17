@@ -44,8 +44,13 @@ export function click(d) {
   // Set a timer, then update for each
   newNodes.forEach((n,i) => {
     d3.timeout(function() {
-      n.x = d.x //+ Math.random() * 10;
-      n.y = d.y //+ Math.random() * 10;
+      if (i === 0) {
+        n.x = d.x;
+        n.y = d.y;
+      } else {
+        n.x = nodes[nodes.length -1].x 
+        n.y = nodes[nodes.length -1].y   
+      }
       nodes.push(n);   
       update()
     }, 75 * i)
