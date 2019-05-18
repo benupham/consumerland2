@@ -11,3 +11,9 @@ export const fontSize = {
   "subdept" : 48,
   "dept" : 72
 }
+
+export const paddings = {
+  "sameParent" : 100,
+  "sameGrandParent" : 200,
+  "sameGGrandParent" : 300
+}

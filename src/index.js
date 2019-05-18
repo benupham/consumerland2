@@ -26,8 +26,6 @@ export const height = window.innerHeight;
 const scale = 1;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
-export const padding = 30; // separation between same-color nodes
-export const clusterPadding = 100; // separation between different-color nodes
 
 export const svg = d3.select("body").append("svg")
 .attr("width", width)
@@ -66,7 +64,7 @@ d3.json("../data/test-brand-generation.json", function(error, root) {
 
 export const simulation = d3.forceSimulation()
 // keep entire simulation balanced around screen center
-.force('center', d3.forceCenter(width/2, height/2))
+// .force('center', d3.forceCenter(width/2, height/2))
 
 // pull toward center
 .force('attract', d3.forceAttract()
@@ -130,7 +128,7 @@ export function update() {
     .attr("name", function (d) { return d.name; })
     .attr("fill", "#fff")
     .transition(t)
-    .attr("r", function (d) { return d.radius + 30; })
+    .attr("r", function (d) { return d.radius; })
 
 
   // Append images
@@ -167,7 +165,7 @@ export function update() {
     .text(d =>  d.price)  
     .attr("class", "price")
     .attr("x", d => d.type === "product" ? -d.radius : 0)
-    .attr("y", function (d) { return d.radius + 30; });  
+    .attr("y", function (d) { return d.radius; });  
     
   node = nodeEnter.merge(node);
 

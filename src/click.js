@@ -48,12 +48,12 @@ export function click(d) {
         n.x = d.x;
         n.y = d.y;
       } else {
-        n.x = nodes[nodes.length -1].x 
-        n.y = nodes[nodes.length -1].y   
+        n.x = d.x 
+        n.y = d.y   
       }
       nodes.push(n);   
       update()
-    }, 75 * i)
+    }, 2 * i)
   });
 
 }
