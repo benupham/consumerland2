@@ -11,7 +11,8 @@ import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
 import { imageSize, fontSize } from './constants';
-import { forceCollide } from './forceCollideCustom';
+import { forceCollideCustom } from './forceCollideCustom';
+//import { forceCollide, collide } from './forceCollideCustom';
 
 
 export const depts = [];
@@ -25,8 +26,8 @@ export const height = window.innerHeight;
 const scale = 1;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
-const padding = 30; // separation between same-color nodes
-const clusterPadding = 10; // separation between different-color nodes
+export const padding = 30; // separation between same-color nodes
+export const clusterPadding = 100; // separation between different-color nodes
 
 export const svg = d3.select("body").append("svg")
 .attr("width", width)
@@ -63,7 +64,7 @@ d3.json("../data/test-brand-generation.json", function(error, root) {
 })
 
 
-export const simulation = d3.forceSimulation(nodes)
+export const simulation = d3.forceSimulation()
 // keep entire simulation balanced around screen center
 .force('center', d3.forceCenter(width/2, height/2))
 
@@ -79,9 +80,11 @@ export const simulation = d3.forceSimulation(nodes)
   .centerInertia(0.1))
 
 // apply collision with padding
-.force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
-  .iterations(3)
-  .strength(0))
+// .force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
+//   .iterations(3)
+//   .strength(0))
+
+  .force('collideCustom', forceCollideCustom())
 
 .on('tick', layoutTick);
 //.on('end', positionLabels);   
@@ -92,12 +95,12 @@ function layoutTick (e) {
 }
 
 // ramp up collision strength to provide smooth transition
-var transitionTime = 3000;
-var t = d3.timer(function (elapsed) {
-  var dt = elapsed / transitionTime;
-  simulation.force('collide').strength(Math.pow(dt, 2) * 0.7);
-  if (dt >= 1.0) t.stop();
-});
+// var transitionTime = 3000;
+// var t = d3.timer(function (elapsed) {
+//   var dt = elapsed / transitionTime;
+//   simulation.force('collide').strength(Math.pow(dt, 2) * 0.7);
+//   if (dt >= 1.0) t.stop();
+// });
 
 
 // Start or restart     
@@ -170,3 +173,5 @@ export function update() {
 
   
 }  
+
+
