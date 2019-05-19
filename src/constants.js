@@ -1,8 +1,8 @@
 export const imageSize = {
   "product" : 125,
-  "brand" : 170,
-  "subdept" : 200,
-  "dept" : 300
+  "brand" : 250,
+  "subdept" : 300,
+  "dept" : 400
 }
 
 export const fontSize = {
@@ -15,5 +15,6 @@ export const fontSize = {
 export const paddings = {
   "sameParent" : 100,
   "sameGrandParent" : 200,
-  "sameGGrandParent" : 300
+  "sameGGrandParent" : 300,
+  "noRelation" : 400
 }

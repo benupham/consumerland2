@@ -37,7 +37,7 @@ export const svg = d3.select("body").append("svg")
 var node = svg.selectAll('g.node'); 
 
 
-d3.json("../data/test-brand-generation.json", function(error, root) {
+d3.json("../data/test-add-ancestors.json", function(error, root) {
   console.log('root',root)
 
   root.forEach(d => {
@@ -61,7 +61,7 @@ d3.json("../data/test-brand-generation.json", function(error, root) {
 
 })
 
-
+//TODO: Reduce simulation for nodes over a certain distance away from click.
 export const simulation = d3.forceSimulation()
 // keep entire simulation balanced around screen center
 // .force('center', d3.forceCenter(width/2, height/2))
