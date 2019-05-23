@@ -37,7 +37,7 @@ export const svg = d3.select("body").append("svg")
 var node = svg.selectAll('g.node'); 
 
 
-d3.json("../data/test-add-ancestors.json", function(error, root) {
+d3.json("../data/productSet.json", function(error, root) {
   console.log('root',root)
 
   root.forEach(d => {
