@@ -12,6 +12,7 @@ import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
 import { imageSize, fontSize } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
+import { forceGrid } from './snapToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
 
 
@@ -83,6 +84,10 @@ export const simulation = d3.forceSimulation()
 //   .strength(0))
 
   .force('collideCustom', forceCollideCustom())
+
+  .force('grid', forceGrid()
+    .grid([500,500])
+    .strength(0.8))
 
 .on('tick', layoutTick);
 //.on('end', positionLabels);   
