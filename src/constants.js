@@ -1,8 +1,8 @@
 export const imageSize = {
-  "product" : 125,
-  "brand" : 250,
-  "subdept" : 300,
-  "dept" : 400
+  "product" : 200,
+  "brand" : 200,
+  "subdept" : 200,
+  "dept" : 200
 }
 
 export const fontSize = {

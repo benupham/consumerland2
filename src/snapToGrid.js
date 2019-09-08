@@ -11,7 +11,7 @@ Use this: https://observablehq.com/@kikinna/uaah-force-directed-layout-in-a-grid
 
 */
 
-export const GRID_UNIT_SIZE = 500;
+export const GRID_UNIT_SIZE = 250;
 export const GRID_WIDTH = 100;
 export const GRID_HEIGHT = 100;
 

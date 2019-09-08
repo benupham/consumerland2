@@ -22,8 +22,8 @@ export const brands = [];
 export const products = [];
 export let nodes = [];
 
-export const width = 50000;
-export const height = 50000;
+export const width = 25000;
+export const height = 25000;
 const scale = 1;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
