@@ -51,7 +51,7 @@ export function click(d) {
         n.x = d.x 
         n.y = d.y   
       }
-      nodes.push(n);   
+      nodes.unshift(n);   
       update()
     }, 2 * i)
   });

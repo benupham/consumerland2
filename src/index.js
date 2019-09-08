@@ -12,9 +12,9 @@ import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
 import { imageSize, fontSize } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
-import { forceGrid } from './snapToGrid';
+import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
-
+import { grid } from './snapToGrid';
 
 export const depts = [];
 export const subdepts = [];
@@ -22,12 +22,14 @@ export const brands = [];
 export const products = [];
 export let nodes = [];
 
-export const width = window.innerWidth;
-export const height = window.innerHeight;
+export const width = 50000;
+export const height = 50000;
 const scale = 1;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
 
+
+// Add SVG canvas and zoom effect
 export const svg = d3.select("body").append("svg")
 .attr("width", width)
 .attr("height", height)
@@ -37,7 +39,7 @@ export const svg = d3.select("body").append("svg")
 
 var node = svg.selectAll('g.node'); 
 
-
+// Create nested objects for each product and dept in product set
 d3.json("../data/productSet.json", function(error, root) {
   console.log('root',root)
 
@@ -62,48 +64,41 @@ d3.json("../data/productSet.json", function(error, root) {
 
 })
 
-//TODO: Reduce simulation for nodes over a certain distance away from click.
-export const simulation = d3.forceSimulation()
-// keep entire simulation balanced around screen center
-// .force('center', d3.forceCenter(width/2, height/2))
 
-// pull toward center
-.force('attract', d3.forceAttract()
-  .target([width/2, height/2])
-  .strength(0.01))
+export const simulation = d3.forceSimulation()
+  // .force("center", d3.forceCenter(width / 2, height / 2))
 
 // cluster by section
-.force('cluster', d3.forceCluster()
-  .centers(function (d) { return clustersObj[d.parent]; })
-  .strength(0.7)
-  .centerInertia(0.1))
+// .force('cluster', d3.forceCluster()
+//   .centers(function (d) { return clustersObj[d.parent]; })
+//   .strength(0.7)
+//   .centerInertia(0.1))
 
-// apply collision with padding
-// .force('collide', d3.forceCollide(function (d) { return d.radius + padding; })
-//   .iterations(3)
-//   .strength(0))
-
-  .force('collideCustom', forceCollideCustom())
-
-  .force('grid', forceGrid()
-    .grid([500,500])
-    .strength(0.8))
+// .force('collideCustom', forceCollideCustom())
 
 .on('tick', layoutTick);
 //.on('end', positionLabels);   
 
-function layoutTick (e) {
-  node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-  //positionLabels();
-}
+    
 
-// ramp up collision strength to provide smooth transition
-// var transitionTime = 3000;
-// var t = d3.timer(function (elapsed) {
-//   var dt = elapsed / transitionTime;
-//   simulation.force('collide').strength(Math.pow(dt, 2) * 0.7);
-//   if (dt >= 1.0) t.stop();
-// });
+function layoutTick (e) {
+  grid.init();
+  //positionLabels();
+  node
+    .each(function(d) { 
+      let gridpoint = grid.occupyNearest(d);
+      if (gridpoint) {            
+          // ensures smooth movement towards final positoin
+          d.x += (gridpoint.x - d.x) * .33;
+          d.y += (gridpoint.y - d.y) * .33;
+        
+          // jumps directly into final position  
+          // d.x = gridpoint.x;
+          // d.y = gridpoint.y
+        }
+    })
+    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });  
+}
 
 
 // Start or restart     

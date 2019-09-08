@@ -1,89 +1,56 @@
+/* 
 
-/**
- * Pulls nodes toward nearest grid point.
- * 
- */
-export const forceGrid = function (grid) {
+1. All nodes are assigned a pre-existing grid location
+2. When new nodes enter, they are assigned the closest grid location that does not have a node
+from the entering group.
+3. When a node is displaced by an entering node, it is added to the end of the entering node group
+to be repositioned 
+4. This means all nodes are repositioned (rippled) with each action. 
 
-  var nodes = void 0,
-      strength = void 0,
-      grids = void 0,
-      strengths = void 0;
+Use this: https://observablehq.com/@kikinna/uaah-force-directed-layout-in-a-grid
 
-  function force(alpha) {
-    var node = void 0,
-        target = void 0,
-        strength = void 0;
-    for (var i = 0; i < nodes.length; i++) {
-      node = nodes[i];
-      target = calcGridPoint(node);
-      strength = strengths[i];
-      node.vx += (target[0] - node.x) * strength * alpha;
-      node.vy += (target[1] - node.y) * strength * alpha;
-    }
-  }
+*/
 
-  function initialize() {
-    if (!nodes) return;
+export const GRID_UNIT_SIZE = 500;
+export const GRID_WIDTH = 100;
+export const GRID_HEIGHT = 100;
 
-    // populate local `strengths` using `strength` accessor
-    strengths = new Array(nodes.length);
-    for (var i = 0; i < nodes.length; i++) {
-      strengths[i] = strength(nodes[i], i, nodes);
-    } // populate local `grid` size using `grid` accessor
-    grids = new Array(nodes.length);
-    for (var _i = 0; _i < nodes.length; _i++) {
-      grids[_i] = grid(nodes[_i], _i, nodes);
-    }
-  }
-
-  force.initialize = function (_) {
-    nodes = _;
-    initialize();
-  };
-
-  force.strength = function (_) {
-    // return existing value if no value passed
-    if (_ == null) return strength;
-
-    // coerce `strength` accessor into a function
-    strength = typeof _ === 'function' ? _ : function () {
-      return +_;
+export let grid = {
+  cells : [],
+  
+  init : function() {
+    this.cells = [];
+    for(var i = 0; i < GRID_WIDTH; i++) {
+      for(var j = 0; j < GRID_HEIGHT; j++) {
+        var cell;
+        cell = {
+          x : i * GRID_UNIT_SIZE,
+          y : j * GRID_UNIT_SIZE,
+          occupied : false
+        };
+        this.cells.push(cell);
+      };
     };
+  },
+    
+  sqdist : function(a, b) {
+    return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+  },
 
-    // reinitialize
-    initialize();
-
-    // allow chaining
-    return force;
-  };
-
-  force.grid = function (_) {
-    // return existing value if no value passed
-    if (_ == null) return grid;
-
-    // coerce `grid` accessor into a function
-    grid = typeof _ === 'function' ? _ : function () {
-      return _;
+  occupyNearest : function(p) {
+    var minDist = 100000000;
+    var d;
+    var candidate = null;
+    for(var i = 0; i < this.cells.length; i++) {
+      if(!this.cells[i].occupied && ( d = this.sqdist(p, this.cells[i])) < minDist) {
+        minDist = d;
+        candidate = this.cells[i];
+      }
     }
-
-    // reinitialize
-    initialize();
-
-    // allow chaining
-    return force;
-  };
-
-  function calcGridPoint(node) {
-    const width = grid(node)[0];
-    const height = grid(node)[1];
-    const targetX = Math.round(node.x / width) * width;
-    const targetY = Math.round(node.y / height) * height;
-    return [targetX,targetY]
+    if(candidate)
+      candidate.occupied = true;
+    return candidate;
   }
+}
 
-  if (!strength) force.strength(0.5);
-  if (!grid) force.grid([100,100]);
-
-  return force;
-};
+//grid.init();
