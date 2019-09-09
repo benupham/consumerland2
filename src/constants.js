@@ -1,15 +1,15 @@
 export const imageSize = {
-  "product" : 200,
-  "brand" : 200,
-  "subdept" : 200,
-  "dept" : 200
+  "product" : 125,
+  "brand" : 125,
+  "subdept" : 125,
+  "dept" : 125
 }
 
 export const fontSize = {
   "product" : 12,
-  "brand" : 24,
-  "subdept" : 48,
-  "dept" : 72
+  "brand" : 14,
+  "subdept" : 16,
+  "dept" : 18
 }
 
 export const paddings = {

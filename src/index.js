@@ -14,7 +14,7 @@ import { imageSize, fontSize } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
-import { grid } from './snapToGrid';
+import { grid, GRID_WIDTH, GRID_UNIT_SIZE, GRID_HEIGHT } from './snapToGrid';
 
 export const depts = [];
 export const subdepts = [];
@@ -22,8 +22,8 @@ export const brands = [];
 export const products = [];
 export let nodes = [];
 
-export const width = 25000;
-export const height = 25000;
+export const width = GRID_WIDTH * GRID_UNIT_SIZE;
+export const height = GRID_HEIGHT * GRID_UNIT_SIZE;
 const scale = 1;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
