@@ -1,8 +1,10 @@
+import { GRID_UNIT_SIZE } from "./snapToGrid";
+
 export const imageSize = {
-  "product" : 125,
-  "brand" : 125,
-  "subdept" : 125,
-  "dept" : 125
+  "product" : GRID_UNIT_SIZE,
+  "brand" : 2*GRID_UNIT_SIZE,
+  "subdept" : 2*GRID_UNIT_SIZE,
+  "dept" : 3*GRID_UNIT_SIZE
 }
 
 export const fontSize = {

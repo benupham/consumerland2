@@ -24,7 +24,7 @@ export let nodes = [];
 
 export const width = GRID_WIDTH * GRID_UNIT_SIZE;
 export const height = GRID_HEIGHT * GRID_UNIT_SIZE;
-const scale = 1;
+const scale = .2;
 const zoomWidth = (width-scale*width)/2;
 const zoomHeight = (height-scale*height)/2;
 
@@ -57,59 +57,23 @@ d3.json("../data/productSet.json", function(error, root) {
   });
 
 
-  depts.forEach( d=> createClusteredNode(d));
+  depts.forEach( d=> {
+    d.x = width/2;
+    d.y = height/2;
+  });
   nodes = depts;
-
+  console.log('nodes',nodes)
   update();
 
 })
 
-
-export const simulation = d3.forceSimulation()
-  // .force("center", d3.forceCenter(width / 2, height / 2))
-
-// cluster by section
-// .force('cluster', d3.forceCluster()
-//   .centers(function (d) { return clustersObj[d.parent]; })
-//   .strength(0.7)
-//   .centerInertia(0.1))
-
-// .force('collideCustom', forceCollideCustom())
-
-.on('tick', layoutTick);
-//.on('end', positionLabels);   
-
-    
-
-function layoutTick (e) {
-  grid.init();
-  //positionLabels();
-  node
-    .each(function(d) { 
-      let gridpoint = grid.occupyNearest(d);
-      if (gridpoint) {            
-          // ensures smooth movement towards final positoin
-          d.x += (gridpoint.x - d.x) * .33;
-          d.y += (gridpoint.y - d.y) * .33;
-        
-          // jumps directly into final position  
-          // d.x = gridpoint.x;
-          // d.y = gridpoint.y
-        }
-    })
-    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });  
-}
-
-
 // Start or restart     
 export function update() {
+  grid.init();
   let t = d3.transition()
   .duration(500);
-
-  simulation.nodes(nodes)
-  //TODO: change alpha depending on number of nodes to be added; less if fewer
-  simulation.alpha(0.7).restart();
-
+  
+  nodes.forEach(d => grid.snapToGrid(d));
   node = node.data(nodes, function(d) { return d.id;})
   
   node.exit()
@@ -120,23 +84,24 @@ export function update() {
     .attr("class", "node")
     .attr("class", d => d.type)
     .attr("name", function (d) { return d.name; })
-    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-    .on("click", click)
 
-  // Append a circle
-  nodeEnter.append("circle")
+  // Append a rectangle
+  nodeEnter.append("rect")
     .attr("name", function (d) { return d.name; })
-    .attr("fill", "#fff")
+    .attr("fill", "red")
+    .attr("fill-opacity", 0.0)
+    .attr("stroke", "blue")
     .transition(t)
-    .attr("r", function (d) { return d.radius; })
+    .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
+    .attr("width", d => imageSize[d.type])
 
 
   // Append images
   nodeEnter.append("image")
     .attr("xlink:href", function (d) { return "../images/" + (d.img || "product-images/missing-item.jpg"); })
     .attr("name", function (d) { return d.name; })
-    .attr("x", function (d) { return -imageSize[d.type] / 2; })
-    .attr("y", function (d) { return -imageSize[d.type] / 2; })
+    .attr("x", 0)
+    .attr("y", 0)
     .transition(t)
     .attr("height", d => imageSize[d.type] ) 
     .attr("width", d => imageSize[d.type])
@@ -144,9 +109,9 @@ export function update() {
 
   // Append title and price
   var nodeEnterText = nodeEnter.append("text")
-    .attr("text-anchor", d => d.type === "product" ? "start" : "middle")
-    .attr("x", d => d.type === "product" ? -d.radius : 0)
-    .attr("y", function (d) { return imageSize[d.type]/2 + 10; })
+    .attr("text-anchor", d => d.type === "product" ? "start" : "start")
+    // .attr("x", d => d.type === "product" ? -d.radius : 0)
+    // .attr("y", function (d) { return imageSize[d.type] + 10; })
     .attr("font-size", d => fontSize[d.type]);
 
   nodeEnterText.append("tspan")
@@ -167,8 +132,14 @@ export function update() {
     .attr("x", d => d.type === "product" ? -d.radius : 0)
     .attr("y", function (d) { return d.radius; });  
     
-  node = nodeEnter.merge(node);
-
+  node = nodeEnter
+    .merge(node)
+  
+  node
+    .transition(t)  
+    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+  
+  node.on("click",click);
   
 }  
 

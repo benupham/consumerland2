@@ -29,43 +29,14 @@ export function click(d) {
     }
   }
 
-  // If the clicked node was the biggest in its cluster, find 2nd biggest
-  if (clustersObj[d.parent] === d) {
-    clustersObj[d.parent] = null; 
-    nodes.forEach(n => {      
-      if (n.parent === d.parent && (!clustersObj[d.parent] || n.value > clustersObj[d.parent].value)) 
-      {
-        clustersObj[d.parent] = n;
-      }
-    })
-  }
-  
-  // Set location of entering nodes around position of parent node
-  // Set a timer, then update for each
   newNodes.forEach((n,i) => {
-    d3.timeout(function() {
-      if (i === 0) {
-        n.x = d.x;
-        n.y = d.y;
-      } else {
-        n.x = d.x 
-        n.y = d.y   
-      }
+      n.x = d.x;
+      n.y = d.y;
       nodes.unshift(n);   
-      update()
-    }, 2 * i)
+       
   });
-
-}
-
-// list different functions for different types
-// of responses to clicking on a parent element
-function expandAndFill() {
-
-}
-
-function repelNeighbors() {
-
+  update(); 
+  nodes.forEach(n => console.log(n.name, n.x, n.y));
 }
 
 
