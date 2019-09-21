@@ -10,7 +10,7 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, fontSize } from './constants';
+import { imageSize, imagePosition, fontSize } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
@@ -25,8 +25,9 @@ export let nodes = [];
 export const width = GRID_WIDTH * GRID_UNIT_SIZE;
 export const height = GRID_HEIGHT * GRID_UNIT_SIZE;
 const scale = .2;
-const zoomWidth = (width-scale*width)/2;
-const zoomHeight = (height-scale*height)/2;
+const zoomWidth = -width/2;
+const zoomHeight = -height/2;
+console.log('zoomWidth', zoomWidth)
 
 
 // Add SVG canvas and zoom effect
@@ -34,8 +35,8 @@ export const svg = d3.select("body").append("svg")
 .attr("width", width)
 .attr("height", height)
 .call(zoom)
-.append("g")
-.attr("transform", "translate(" + zoomWidth + "," + zoomHeight + ") scale(" + scale + ")");
+.attr("transform", "translate(" + zoomWidth + "," + zoomHeight + ")" )
+.append("g");
 
 var node = svg.selectAll('g.node'); 
 
@@ -86,22 +87,22 @@ export function update() {
     .attr("name", function (d) { return d.name; })
 
   // Append a rectangle
-  nodeEnter.append("rect")
-    .attr("name", function (d) { return d.name; })
-    .attr("fill", "red")
-    .attr("fill-opacity", 0.0)
-    .attr("stroke", "blue")
-    .transition(t)
-    .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
-    .attr("width", d => imageSize[d.type])
+  // nodeEnter.append("rect")
+  //   .attr("name", function (d) { return d.name; })
+  //   .attr("fill", "red")
+  //   .attr("fill-opacity", 0.0)
+  //   //.attr("stroke", "blue")
+  //   .transition(t)
+  //   .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
+  //   .attr("width", d => imageSize[d.type])
 
 
   // Append images
   nodeEnter.append("image")
     .attr("xlink:href", function (d) { return "../images/" + (d.img || "product-images/missing-item.jpg"); })
     .attr("name", function (d) { return d.name; })
-    .attr("x", 0)
-    .attr("y", 0)
+    .attr("x", d => imagePosition[d.type][0])
+    .attr("y", d => imagePosition[d.type][1])
     .transition(t)
     .attr("height", d => imageSize[d.type] ) 
     .attr("width", d => imageSize[d.type])

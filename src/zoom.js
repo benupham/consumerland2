@@ -7,6 +7,8 @@ export const zoom = d3.zoom()
 
 function zoomed() {
   svg.attr("transform", d3.event.transform);
+  let zoomMeter = document.getElementById("zoomMeter");
+  zoomMeter.innerHTML = "zoom: " + d3.event.transform.k;
 }  
 
 
