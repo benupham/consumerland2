@@ -42,8 +42,7 @@ export let grid = {
     let type = d.type;
 
     switch (type) {
-      case 'dept':
-      case 'subdept':  
+      case 'dept':  
          
         if (this.cells[i+1] && this.cells[i+2] && 
             this.cells[i+GRID_HEIGHT] && this.cells[i+GRID_HEIGHT+1] && this.cells[i+GRID_HEIGHT+2] && 
@@ -63,29 +62,31 @@ export let grid = {
             }
         } 
         break;
-      
-      // case 'subdept':
-      //   if (!this.cells[i].occupied) return true
-      //   break;
         
-      case 'brand':
+      case 'subdept':
    
         if (this.cells[i+1] && 
           this.cells[i+GRID_HEIGHT] && this.cells[i+GRID_HEIGHT+1]           
           ) {
           
-          if (!this.cells[i].occupied && !this.cells[i+1].occupied &&
-              !this.cells[i+GRID_HEIGHT].occupied && !this.cells[i+GRID_HEIGHT+1].occupied 
-              ) {
-                
-            return [
-                    i, i+1, 
-                    i+GRID_HEIGHT, i+GRID_HEIGHT+1
-                  ]
+            if (!this.cells[i].occupied && !this.cells[i+1].occupied &&
+                !this.cells[i+GRID_HEIGHT].occupied && !this.cells[i+GRID_HEIGHT+1].occupied 
+                ) {
+                  
+              return [
+                      i, i+1, 
+                      i+GRID_HEIGHT, i+GRID_HEIGHT+1
+                    ]
           }
-      } 
-      break;    
+        } 
+        break;    
 
+      case 'brand':
+        if (this.cells[i+GRID_HEIGHT] && !this.cells[i].occupied && !this.cells[i+GRID_HEIGHT].occupied) {
+          return [i, i+GRID_HEIGHT]
+        } 
+        break;
+  
       case 'product':
         if (this.cells[i+1] && !this.cells[i].occupied && !this.cells[i+1].occupied) {
           return [i, i+1]

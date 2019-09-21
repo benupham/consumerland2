@@ -10,7 +10,7 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, imagePosition, fontSize } from './constants';
+import { imageSize, imagePosition, fontSize, textAnchor, textPosition } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
@@ -87,14 +87,14 @@ export function update() {
     .attr("name", function (d) { return d.name; })
 
   // Append a rectangle
-  // nodeEnter.append("rect")
-  //   .attr("name", function (d) { return d.name; })
-  //   .attr("fill", "red")
-  //   .attr("fill-opacity", 0.0)
-  //   //.attr("stroke", "blue")
-  //   .transition(t)
-  //   .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
-  //   .attr("width", d => imageSize[d.type])
+  nodeEnter.append("rect")
+    .attr("name", function (d) { return d.name; })
+    .attr("fill", "#fff")
+    .attr("fill-opacity", 1)
+    .attr("stroke", "blue")
+    .transition(t)
+    .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
+    .attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
 
 
   // Append images
@@ -110,28 +110,28 @@ export function update() {
 
   // Append title and price
   var nodeEnterText = nodeEnter.append("text")
-    .attr("text-anchor", d => d.type === "product" ? "start" : "start")
-    // .attr("x", d => d.type === "product" ? -d.radius : 0)
-    // .attr("y", function (d) { return imageSize[d.type] + 10; })
+    .attr("text-anchor", d => textAnchor[d.type])
+    .attr("x", d => textPosition[d.type][0])
+    .attr("y", d => textPosition[d.type][1])
     .attr("font-size", d => fontSize[d.type]);
 
   nodeEnterText.append("tspan")
     .attr("class", "name")
-    .text(d =>  textFormatter(d.name, 25, 50)[0]);
-    // .attr("x", d => d.type === "product" ? -d.radius : 0)
-    // .attr("y", function (d) { return d.radius; })
+    .text(d =>  textFormatter(d.name, 25, 50)[0])
+    
+    
   
   nodeEnterText.append("tspan")
     .attr("class", "name")
     .text(d =>  textFormatter(d.name, 25, 50)[1])
-    .attr("x", d => d.type === "product" ? -d.radius : 0)
-    .attr("y", function (d) { return d.radius + 15; });
+    .attr("x", d => textPosition[d.type][0])
+    .attr("dy", d => fontSize[d.type])
 
   nodeEnterText.append("tspan")
     .text(d =>  d.price)  
     .attr("class", "price")
-    .attr("x", d => d.type === "product" ? -d.radius : 0)
-    .attr("y", function (d) { return d.radius; });  
+    // .attr("x", d => d.type === "product" ? -d.radius : 0)
+    // .attr("y", function (d) { return d.radius; });  
     
   node = nodeEnter
     .merge(node)
