@@ -1,10 +1,21 @@
-import { GRID_UNIT_SIZE } from "./snapToGrid";
+export const GRID_UNIT_SIZE = 200;
+export const GRID_WIDTH = 150;
+export const GRID_HEIGHT = 150;
+
+const UNIT_MARGIN = GRID_UNIT_SIZE*0.1;
+
+export const strokeColor = {
+  "product" : "white",
+  "brand" : "#e5e5e5",
+  "subdept" : "#e5e5e5",
+  "dept" : "#e5e5e5"
+}
 
 export const imageSize = {
-  "product" : GRID_UNIT_SIZE,
-  "brand" : GRID_UNIT_SIZE,
-  "subdept" : 2*GRID_UNIT_SIZE,
-  "dept" : 3*GRID_UNIT_SIZE
+  "product" : GRID_UNIT_SIZE - UNIT_MARGIN,
+  "brand" : GRID_UNIT_SIZE - UNIT_MARGIN,
+  "subdept" : 2*GRID_UNIT_SIZE - UNIT_MARGIN,
+  "dept" : 3*GRID_UNIT_SIZE - UNIT_MARGIN
 }
 
 export const imagePosition = {
@@ -22,8 +33,8 @@ export const textAnchor = {
 }
 
 export const textPosition = {
-  "product" : [GRID_UNIT_SIZE/10,GRID_UNIT_SIZE*1.1],
-  "brand" : [GRID_UNIT_SIZE/8,GRID_UNIT_SIZE/2],
+  "product" : [0,GRID_UNIT_SIZE],
+  "brand" : [GRID_UNIT_SIZE/20,GRID_UNIT_SIZE/2],
   "subdept" : [GRID_UNIT_SIZE,GRID_UNIT_SIZE],
   "dept" : [GRID_UNIT_SIZE,GRID_UNIT_SIZE]
 }

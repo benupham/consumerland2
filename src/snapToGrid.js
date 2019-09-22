@@ -1,3 +1,5 @@
+import { GRID_WIDTH, GRID_HEIGHT, GRID_UNIT_SIZE } from "./constants";
+
 /* 
 
 1. All nodes are assigned a pre-existing grid location
@@ -10,10 +12,6 @@ to be repositioned
 Use this: https://observablehq.com/@kikinna/uaah-force-directed-layout-in-a-grid
 
 */
-
-export const GRID_UNIT_SIZE = 200;
-export const GRID_WIDTH = 150;
-export const GRID_HEIGHT = 150;
 
 export let grid = {
   cells : [],

@@ -1,20 +1,16 @@
 body {
   font-family: Lato, Roboto, Arial, Helvetica, sans-serif;
 }
-.product .name, .price {
-  fill: #0066c0;
-  font-size: 12px;
+
+g.dept, g.subdept, g.brand, g.product {
   cursor: pointer;
 }
+
+.product .name {
+  fill: #0066c0;
+  cursor: pointer;
+}
+
 .product .name:hover, .price:hover {
   fill: #c45500;
-}
-.dept {
-  font-size: 21px;
-}
-.subdept {
-  font-size: 18px;
-}
-.brand {
-  font-size: 16px;
 }

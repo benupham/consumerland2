@@ -10,11 +10,12 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, imagePosition, fontSize, textAnchor, textPosition } from './constants';
+import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
-import { grid, GRID_WIDTH, GRID_UNIT_SIZE, GRID_HEIGHT } from './snapToGrid';
+import { grid } from './snapToGrid';
+import { GRID_WIDTH, GRID_UNIT_SIZE, GRID_HEIGHT } from './constants';
 
 export const depts = [];
 export const subdepts = [];
@@ -86,12 +87,12 @@ export function update() {
     .attr("class", d => d.type)
     .attr("name", function (d) { return d.name; })
 
-  // Append a rectangle
+  // Append a rectangle background
   nodeEnter.append("rect")
     .attr("name", function (d) { return d.name; })
     .attr("fill", "#fff")
     .attr("fill-opacity", 1)
-    .attr("stroke", "blue")
+    .attr("stroke", d => strokeColor[d.type])
     .transition(t)
     .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
     .attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
@@ -108,31 +109,70 @@ export function update() {
     .attr("width", d => imageSize[d.type])
     .attr("alignment-baseline", "middle")
 
-  // Append title and price
+  // Append title 
   var nodeEnterText = nodeEnter.append("text")
     .attr("text-anchor", d => textAnchor[d.type])
     .attr("x", d => textPosition[d.type][0])
     .attr("y", d => textPosition[d.type][1])
-    .attr("font-size", d => fontSize[d.type]);
+    .attr("font-size", d => fontSize[d.type])
+    .attr("fill", "#111111");
 
   nodeEnterText.append("tspan")
-    .attr("class", "name")
+    .attr("class", "name name-line1")
     .text(d =>  textFormatter(d.name, 25, 50)[0])
     
-    
-  
   nodeEnterText.append("tspan")
-    .attr("class", "name")
+    .attr("class", "name name-line2")
     .text(d =>  textFormatter(d.name, 25, 50)[1])
     .attr("x", d => textPosition[d.type][0])
-    .attr("dy", d => fontSize[d.type])
-
+    .attr("dy", d => fontSize[d.type]*1.1)
+  
+  // Append price for products 
   nodeEnterText.append("tspan")
     .text(d =>  d.price)  
     .attr("class", "price")
-    // .attr("x", d => d.type === "product" ? -d.radius : 0)
-    // .attr("y", function (d) { return d.radius; });  
-    
+    .attr("font-size", 16)
+    .attr("fill", "#B12704")
+    .attr("x", d => textPosition[d.type][0])
+    .attr("dy", d => fontSize[d.type]*4);
+  
+  // Append stars rating for products
+  nodeEnter.filter(d => d.type === "product")
+    .append("image") 
+    .attr("xlink:href", "../images/four-and-half-stars.png")
+    .attr("name", "stars")
+    .attr("x", d => textPosition[d.type][0])
+    .attr("y", d => {
+      return textFormatter(d.name, 25, 50)[1].length > 0 ? textPosition[d.type][1] + fontSize[d.type]*1.75 : textPosition[d.type][1] + fontSize[d.type]*0.75
+    })
+    .attr("height", 15 ) 
+    .attr("width", 80)
+  
+  // Append buy button  
+  nodeEnter.filter(d => d.type === "product")
+    .append("rect")
+    .attr("class", "buy-button")
+    .attr("fill", "url(#lgrad)")
+    .attr("rx", "2")
+    .attr("stroke", "#a88734")
+    .attr("width", d => imageSize[d.type])
+    .attr("height", 30)
+    .attr("x", d => textPosition[d.type][0])
+    .attr("y", d => {
+      return textPosition[d.type][1] + fontSize[d.type]*6
+    })
+  // Buy button label
+  nodeEnter.filter(d => d.type === "product")
+    .append("text")
+    .text("Add to Cart")
+    .attr("x", d => imageSize[d.type]/2)
+    .attr("y", d => {
+      return textPosition[d.type][1] + fontSize[d.type]*6.5 + 15
+    })
+    .attr("text-anchor", "middle")
+    .attr('fill', '#111111')
+    .attr("font-size", 16)
+
   node = nodeEnter
     .merge(node)
   
