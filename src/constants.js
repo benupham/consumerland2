@@ -1,3 +1,5 @@
+export const imagesURL = 'https://s3-us-west-1.amazonaws.com/consumerland/';
+
 export const GRID_UNIT_SIZE = 200;
 export const GRID_WIDTH = 150;
 export const GRID_HEIGHT = 150;

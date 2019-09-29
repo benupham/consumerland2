@@ -10,7 +10,7 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor } from './constants';
+import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor, imagesURL } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
@@ -100,7 +100,7 @@ export function update() {
 
   // Append images
   nodeEnter.append("image")
-    .attr("xlink:href", function (d) { return "../images/" + (d.img || "product-images/missing-item.jpg"); })
+    .attr("xlink:href", function (d) { return imagesURL + (d.img || "product-images/missing-item.jpg"); })
     .attr("name", function (d) { return d.name; })
     .attr("x", d => imagePosition[d.type][0])
     .attr("y", d => imagePosition[d.type][1])
@@ -139,7 +139,7 @@ export function update() {
   // Append stars rating for products
   nodeEnter.filter(d => d.type === "product")
     .append("image") 
-    .attr("xlink:href", "../images/four-and-half-stars.png")
+    .attr("xlink:href", imagesURL + "four-and-half-stars.png")
     .attr("name", "stars")
     .attr("x", d => textPosition[d.type][0])
     .attr("y", d => {
