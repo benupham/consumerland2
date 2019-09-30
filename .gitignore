@@ -3,3 +3,4 @@ data
 images
 dist/examples
 .DS_Store
+*firebase*
