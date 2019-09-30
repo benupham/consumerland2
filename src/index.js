@@ -17,6 +17,8 @@ import { forceGrid } from './forceToGrid';
 import { grid } from './snapToGrid';
 import { GRID_WIDTH, GRID_UNIT_SIZE, GRID_HEIGHT } from './constants';
 
+import './style.css';
+
 export const depts = [];
 export const subdepts = [];
 export const brands = [];
@@ -90,12 +92,13 @@ export function update() {
   // Append a rectangle background
   nodeEnter.append("rect")
     .attr("name", function (d) { return d.name; })
-    .attr("fill", "#fff")
-    .attr("fill-opacity", 1)
+    .attr("class", "wrap")
+    // .attr("fill", "red")
+    //.attr("fill-opacity", 1)
     .attr("stroke", d => strokeColor[d.type])
     .transition(t)
-    .attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
-    .attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
+    //.attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
+    //.attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
 
 
   // Append images
@@ -139,7 +142,7 @@ export function update() {
   // Append stars rating for products
   nodeEnter.filter(d => d.type === "product")
     .append("image") 
-    .attr("xlink:href", imagesURL + "four-and-half-stars.png")
+    .attr("xlink:href", imagesURL + "category-images/four-and-half-stars.png")
     .attr("name", "stars")
     .attr("x", d => textPosition[d.type][0])
     .attr("y", d => {

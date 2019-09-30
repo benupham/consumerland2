@@ -14,3 +14,9 @@ g.dept, g.subdept, g.brand, g.product {
 .product .name:hover, .price:hover {
   fill: #c45500;
 }
+
+rect.wrap {
+  fill-opacity: 0.5;
+  height: 180px;
+  width: 180px;
+}
