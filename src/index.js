@@ -10,14 +10,14 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor, imagesURL, rectPosition } from './constants';
+import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor, imagesURL, rectPosition, rectFill, rectSize, rectFilter } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
 import { grid } from './snapToGrid';
 import { GRID_WIDTH, GRID_UNIT_SIZE, GRID_HEIGHT } from './constants';
 
-import './style.css';
+// import './styles/style.css';
 
 export const depts = [];
 export const subdepts = [];
@@ -74,6 +74,7 @@ d3.json("../data/productSet.json", function(error, root) {
 // Start or restart     
 export function update() {
   grid.init();
+
   let t = d3.transition()
   .duration(500);
   
@@ -88,6 +89,7 @@ export function update() {
     .attr("class", "node")
     .attr("class", d => d.type)
     .attr("name", function (d) { return d.name; })
+    .style("font-family", "Lato, Roboto, Arial, Helvetica, sans-serif")
 
   // Append a rectangle background
   nodeEnter.append("rect")
@@ -95,12 +97,13 @@ export function update() {
     .attr("class", "wrap")
     .attr("x", d => rectPosition[d.type][0])
     .attr("y", d=> rectPosition[d.type][1])
-    // .attr("fill", "red")
-    //.attr("fill-opacity", 1)
-    //.attr("stroke", d => strokeColor[d.type])
-    //.transition(t)
-    //.attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
-    //.attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
+    .attr("fill", d => rectFill[d.type])
+    .attr("fill-opacity", 1)
+    .attr("stroke", d => strokeColor[d.type])
+    .transition(t)
+    .attr("height", d => rectSize[d.type][1]) 
+    .attr("width", d => rectSize[d.type][0])
+    .style("filter", d => rectFilter[d.type])
 
 
   // Append images
