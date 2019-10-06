@@ -10,7 +10,7 @@ import {zoom} from './zoom';
 import {createClusteredNode, clustersObj} from './clustering';
 import { textFormatter } from './utilities';
 import { positionLabels } from './labels';
-import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor, imagesURL } from './constants';
+import { imageSize, imagePosition, fontSize, textAnchor, textPosition, strokeColor, imagesURL, rectPosition } from './constants';
 import { forceCollideCustom } from './forceCollideCustom';
 import { forceGrid } from './forceToGrid';
 //import { forceCollide, collide } from './forceCollideCustom';
@@ -93,10 +93,12 @@ export function update() {
   nodeEnter.append("rect")
     .attr("name", function (d) { return d.name; })
     .attr("class", "wrap")
+    .attr("x", d => rectPosition[d.type][0])
+    .attr("y", d=> rectPosition[d.type][1])
     // .attr("fill", "red")
     //.attr("fill-opacity", 1)
-    .attr("stroke", d => strokeColor[d.type])
-    .transition(t)
+    //.attr("stroke", d => strokeColor[d.type])
+    //.transition(t)
     //.attr("height", d => d.type === 'product' ? 2*imageSize[d.type] : imageSize[d.type] ) 
     //.attr("width", d => d.type === 'brand' ? 2*imageSize[d.type] : imageSize[d.type])
 

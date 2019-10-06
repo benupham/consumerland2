@@ -21,8 +21,15 @@ export const imageSize = {
 }
 
 export const imagePosition = {
-  "product" : [0,0],
-  "brand" : [GRID_UNIT_SIZE,0],
+  "product" : [12.5,12.5],
+  "brand" : [GRID_UNIT_SIZE + 25,25],
+  "subdept" : [0,0],
+  "dept" : [0,0]
+}
+
+export const rectPosition = {
+  "product" : [12.5,12.5],
+  "brand" : [12.5,12.5],
   "subdept" : [0,0],
   "dept" : [0,0]
 }
@@ -35,17 +42,17 @@ export const textAnchor = {
 }
 
 export const textPosition = {
-  "product" : [0,GRID_UNIT_SIZE],
-  "brand" : [GRID_UNIT_SIZE/20,GRID_UNIT_SIZE/2],
+  "product" : [15,GRID_UNIT_SIZE + 22],
+  "brand" : [50,112],
   "subdept" : [GRID_UNIT_SIZE,GRID_UNIT_SIZE],
   "dept" : [GRID_UNIT_SIZE,GRID_UNIT_SIZE]
 }
 
 
 export const fontSize = {
-  "product" : 12,
-  "brand" : 20,
-  "subdept" : 24,
+  "product" : 18,
+  "brand" : 24,
+  "subdept" : 26,
   "dept" : 36
 }
 
